@@ -16,7 +16,7 @@ A = [
  0  0  0  0  0  0  0  0  0  0  0
 ]
 
-g = SimpleDiGraph(A)
+g = LightGraphs.SimpleDiGraph(A)
 
 ew_spc, vw_spc, tf_spc = MainPaths.weights_spc(g, normalize=false)
 
