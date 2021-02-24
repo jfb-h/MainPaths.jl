@@ -1,0 +1,13 @@
+name = "MainPaths"
+uuid = "f429ff72-55f4-4340-8292-212120acb409"
+authors = ["Jakob Hoffmann <jfb-hoffmann@hotmail.de> and contributors"]
+version = "0.1.0"
+
+[compat]
+julia = "1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
