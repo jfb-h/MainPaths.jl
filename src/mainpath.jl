@@ -17,15 +17,15 @@ end
 
 function emax_outneighbors(g::AbstractGraph{T}, v::S, w::AbstractMatrix{U}) where {S,T <: Integer} where {U <: Real}
     nb = outneighbors(g, v)
-    wnb = w[v, nb]
     length(nb) == 0 && return nb
+    wnb = w[v, nb]
     nb[wnb .== maximum(wnb)]
 end
 
 function emax_inneighbors(g::AbstractGraph{T}, v::S, w::AbstractMatrix{U}) where {S,T <: Integer} where {U <: Real}
     nb = inneighbors(g, v)
-    wnb = w[nb, v]
     length(nb) == 0 && return nb
+    wnb = w[nb, v]
     nb[wnb .== maximum(wnb)]
 end
 
@@ -116,8 +116,8 @@ function mainpath(
     weights::AbstractMatrix{<:Real},
     ::FBMP) where T <: Integer
 
-    parents_fwd = bfs_mulitparents(g, start, (g, v) -> vmax_outneighbors(g, v, weights))
-    parents_bwd = bfs_mulitparents(g, start, (g, v) -> vmax_inneighbors(g, v, weights))
+    parents_fwd = bfs_mulitparents(g, start, (g, v) -> emax_outneighbors(g, v, weights))
+    parents_bwd = bfs_mulitparents(g, start, (g, v) -> emax_inneighbors(g, v, weights))
 
     n = T(length(parents_fwd))
     g = DiGraph{T}(n)

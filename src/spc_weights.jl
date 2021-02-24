@@ -63,3 +63,9 @@ function weights_spc(g::AbstractGraph{T}; normalize = false) where T <: Integer
     normalize && return (edgeweights = ew ./ tf, vertexweights = vw ./ tf, totalflow = tf)
     return (edgeweights = ew, vertexweights = vw, totalflow = tf)
 end
+
+function weights_matrix(g::AbstractGraph{T}, weights::AbstractVector{U}) where T <: Integer where U <: Real
+    senders = [src(e) for e in edges(g)]
+    receivers = [dst(e) for e in edges(g)]
+    return sparse(senders, receivers, weights)
+end

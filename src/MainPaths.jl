@@ -1,5 +1,6 @@
 module MainPaths
 using LightGraphs
+using SparseArrays
 
 # using PlotlyJS
 # using GraphPlot: stressmajorize_layout
