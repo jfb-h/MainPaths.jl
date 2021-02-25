@@ -42,7 +42,7 @@ end
 function weights_spc(g::AbstractGraph{T}; normalize = false) where T <: Integer
     g = LightGraphs.SimpleDiGraph(g)
     add_source_target!(g)
-    vseqt = LightGraphs.Traversals.topological_sort(g)
+    vseqt = topological_sort_by_dfs(g)
 
     st = vseqt[[1, end]]
     N_m = N⁻(g, vseqt)
