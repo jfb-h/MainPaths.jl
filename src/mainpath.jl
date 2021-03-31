@@ -86,7 +86,7 @@ function mainpath(
     ::FBMP) where T <: Integer
 
     parents_fwd, visited_fwd = bfs_multi(g, start, (g, v) -> vmax_outneighbors(g, v, weights))
-    parents_bwd, visitde_bwd = bfs_multi(g, start, (g, v) -> vmax_inneighbors(g, v, weights))
+    parents_bwd, visited_bwd = bfs_multi(g, start, (g, v) -> vmax_inneighbors(g, v, weights))
 
     n = T(length(parents_fwd))
     g = DiGraph{T}(n)
@@ -116,8 +116,8 @@ function mainpath(
     weights::AbstractMatrix{<:Real},
     ::FBMP) where T <: Integer
 
-    parents_fwd = bfs_multi(g, start, (g, v) -> emax_outneighbors(g, v, weights))
-    parents_bwd = bfs_multi(g, start, (g, v) -> emax_inneighbors(g, v, weights))
+    parents_fwd, visited_fwd = bfs_multi(g, start, (g, v) -> emax_outneighbors(g, v, weights))
+    parents_bwd, visited_bwd = bfs_multi(g, start, (g, v) -> emax_inneighbors(g, v, weights))
 
     n = T(length(parents_fwd))
     g = DiGraph{T}(n)
