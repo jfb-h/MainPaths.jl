@@ -47,7 +47,7 @@ end
 
 struct FBMP <: MainPathAlgorithm end
 
-function bfs_mulitparents(g::AbstractGraph{T}, source, neighborfn::Function) where T
+function bfs_multi(g::AbstractGraph{T}, source, neighborfn::Function) where T
     n = nv(g)
     visited = falses(n)
     parents = [Vector{T}() for _ in 1:n]
@@ -76,7 +76,7 @@ function bfs_mulitparents(g::AbstractGraph{T}, source, neighborfn::Function) whe
         cur_level, next_level = next_level, cur_level
         sort!(cur_level)
     end
-    return parents
+    return parents, visited
 end
 
 function mainpath(
@@ -85,8 +85,8 @@ function mainpath(
     weights::Vector{<:Real},
     ::FBMP) where T <: Integer
 
-    parents_fwd = bfs_mulitparents(g, start, (g, v) -> vmax_outneighbors(g, v, weights))
-    parents_bwd = bfs_mulitparents(g, start, (g, v) -> vmax_inneighbors(g, v, weights))
+    parents_fwd, visited_fwd = bfs_multi(g, start, (g, v) -> vmax_outneighbors(g, v, weights))
+    parents_bwd, visitde_bwd = bfs_multi(g, start, (g, v) -> vmax_inneighbors(g, v, weights))
 
     n = T(length(parents_fwd))
     g = DiGraph{T}(n)
@@ -116,8 +116,8 @@ function mainpath(
     weights::AbstractMatrix{<:Real},
     ::FBMP) where T <: Integer
 
-    parents_fwd = bfs_mulitparents(g, start, (g, v) -> emax_outneighbors(g, v, weights))
-    parents_bwd = bfs_mulitparents(g, start, (g, v) -> emax_inneighbors(g, v, weights))
+    parents_fwd = bfs_multi(g, start, (g, v) -> emax_outneighbors(g, v, weights))
+    parents_bwd = bfs_multi(g, start, (g, v) -> emax_inneighbors(g, v, weights))
 
     n = T(length(parents_fwd))
     g = DiGraph{T}(n)
