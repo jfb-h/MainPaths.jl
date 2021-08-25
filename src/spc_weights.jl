@@ -39,10 +39,24 @@ function N⁺(g::LightGraphs.SimpleDiGraph{T}, vseqt::Vector{T}) where T <: Inte
     return val
 end
 
+function weights_matrix(g::AbstractGraph{T}, weights::AbstractVector{U}) where T <: Integer where U <: Real
+    senders = [src(e) for e in edges(g)]
+    receivers = [dst(e) for e in edges(g)]
+    return sparse(senders, receivers, weights)
+end
+
+"""
+    weights_spc(g, normalize=false)
+
+Compute the Search Path Count (SPC) weights for graph `g` as described in Batagelj (2003).
+The function returns a vector with edgeweights, a vector with vertex weights and the total
+flow. When `normalize` is set to `true`, edge weigths and vertex weights are divided by
+total flow.
+"""
 function weights_spc(g::AbstractGraph{T}; normalize = false) where T <: Integer
     g = LightGraphs.SimpleDiGraph(g)
     add_source_target!(g)
-    vseqt = topological_sort_by_dfs(g)
+    vseqt = LightGraphs.topological_sort_by_dfs(g)
 
     st = vseqt[[1, end]]
     N_m = N⁻(g, vseqt)
@@ -60,12 +74,8 @@ function weights_spc(g::AbstractGraph{T}; normalize = false) where T <: Integer
         ew[i] = N_m[src(e)] * N_p[dst(e)]
     end
 
-    normalize && return (edgeweights = ew ./ tf, vertexweights = vw ./ tf, totalflow = tf)
-    return (edgeweights = ew, vertexweights = vw, totalflow = tf)
+    normalize && return ew ./ tf, vw ./ tf, tf
+    
+    return weights_matrix(g, ew), vw, tf
 end
 
-function weights_matrix(g::AbstractGraph{T}, weights::AbstractVector{U}) where T <: Integer where U <: Real
-    senders = [src(e) for e in edges(g)]
-    receivers = [dst(e) for e in edges(g)]
-    return sparse(senders, receivers, weights)
-end

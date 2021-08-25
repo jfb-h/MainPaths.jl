@@ -1,5 +1,5 @@
 
-function genetic_knowper_global(g::AbstractGraph{T}) where T <: Integer
+function _genetic_knowper_global(g::AbstractGraph{T}) where T <: Integer
     n = nv(g)
     sinks = get_sinks(g)
     sources = get_sources(g)
@@ -11,7 +11,7 @@ function genetic_knowper_global(g::AbstractGraph{T}) where T <: Integer
     w = 1 ./ indegree(g)
     od = outdegree(g)
     kp = zeros(n)
-    kp[sinks] .= 1
+    kp[sinks] .= 1.0
 
     layer = sinks
     while length(layer) > 0
@@ -40,7 +40,7 @@ function genetic_knowper_global(g::AbstractGraph{T}) where T <: Integer
 end 
 
 
-function genetic_knowper_local(g::AbstractGraph{T}) where T <: Integer
+function _genetic_knowper_local(g::AbstractGraph{T}) where T <: Integer
     n = nv(g)
     sinks = get_sinks(g)
     sources = get_sources(g)
@@ -85,22 +85,32 @@ function genetic_knowper_local(g::AbstractGraph{T}) where T <: Integer
 
 end 
 
+"""
+    genetic_knowper(g, normalize=:none)
 
-function genetic_knowper(g::AbstractGraph{T}; normalize::Symbol=:global) where T <: Integer
+Compute the genetic knowledge persistence scores for all nodes in `g`. 
+    
+This is a modified version of the method proposed in Martinelli & Nomaler (2014) 
+where citations from future patents to patents before the curent layer are not ignored
+in the persistence computation.
+"""
+function genetic_knowper(g::AbstractGraph{T}; normalize::Symbol=:none) where T <: Integer
     if normalize == :global 
-        res = genetic_knowper_global(g)
+        res = _genetic_knowper_global(g)
         return res ./ maximum(res)
     elseif normalize == :local
-        res, layers = genetic_knowper_local(g)
-
+        res, layers = _genetic_knowper_local(g)
         for l in unique(layers)
             res[layers .== l] .= res[layers .== l] ./ maximum(res[layers .== l])
         end
-
         res[isnan.(res)] .= 0.0
         return res
+    elseif normalize == :none
+        return _genetic_knowper_global(g)
     else
-        return genetic_knowper_global(g)
+        throw(ArgumentError("Viable options for normalize are :global, :local or :none."))
     end
 end
 
+
+    
