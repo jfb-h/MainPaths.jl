@@ -1,131 +1,81 @@
 
 abstract type MainPathAlgorithm end
 
-function vmax_outneighbors(g::AbstractGraph{T}, v::S, w::AbstractVector{U}) where {S,T <: Integer} where {U <: Real}
-    nb = outneighbors(g, v)
-    length(nb) == 0 && return nb
-    wnb = w[nb]
-    return nb[wnb .== maximum(wnb)]
+struct MainPathResult{T}
+    mainpath::SimpleDiGraph{T}
+    vertices::Vector{T}
 end
 
-function vmax_inneighbors(g::AbstractGraph{T}, v::S, w::AbstractVector{U}) where {S,T <: Integer} where {U <: Real}  
-    nb = inneighbors(g, v)
-    length(nb) == 0 && return nb
-    wnb = w[nb]
-    return nb[wnb .== maximum(wnb)]
+function Base.show(io::IO, mp::MainPathResult) 
+    println(io, "MainPath with $(nv(mp.mainpath)) vertices and $(ne(mp.mainpath)) edges.")
 end
-
-function emax_outneighbors(g::AbstractGraph{T}, v::S, w::AbstractMatrix{U}) where {S,T <: Integer} where {U <: Real}
-    nb = outneighbors(g, v)
-    length(nb) == 0 && return nb
-    wnb = w[v, nb]
-    nb[wnb .== maximum(wnb)]
-end
-
-function emax_inneighbors(g::AbstractGraph{T}, v::S, w::AbstractMatrix{U}) where {S,T <: Integer} where {U <: Real}
-    nb = inneighbors(g, v)
-    length(nb) == 0 && return nb
-    wnb = w[nb, v]
-    nb[wnb .== maximum(wnb)]
-end
-
-# emax_outneighbors(g::AbstractMetaGraph, v::Integer) = emax_outneighbors(g, v, weights(g))
-# emax_inneighbors(g::AbstractMetaGraph, v::Integer) = emax_inneighbors(g, v, weights(g))
-
-function max_outweight(g::AbstractGraph{T}, v::S, w::AbstractMatrix{U}) where {S,T <: Integer} where {U <: Real}
-    nb = outneighbors(g, v)
-    length(nb) > 0 || return 0
-    maximum(w[v, nb])
-end
-
-function max_inweight(g::AbstractGraph{T}, v::S, w::AbstractMatrix{U}) where {S,T <: Integer} where {U <: Real}
-    nb = inneighbors(g, v)
-    length(nb) > 0 || return 0
-    maximum(w[nb, v])
-end
-
 
 struct FBMP <: MainPathAlgorithm end
 
-function bfs_multi(g::AbstractGraph{T}, source, neighborfn::Function) where T
-    n = nv(g)
-    visited = falses(n)
-    parents = [Vector{T}() for _ in 1:n]
-    cur_level = Vector{T}()
-    sizehint!(cur_level, n)
-    next_level = Vector{T}()
-    sizehint!(next_level, n)
-    @inbounds for s in source
-        visited[s] = true
-        push!(cur_level, s)
-        parents[s] = [s]
-    end
-    while !isempty(cur_level)
-        @inbounds for v in cur_level
-            @inbounds @simd for i in neighborfn(g, v)
-                if visited[i]
-                    push!(parents[i], v)
-                else
-                    push!(next_level, i)
-                    push!(parents[i], v)
-                    visited[i] = true
-                end
-            end
-        end
-        empty!(cur_level)
-        cur_level, next_level = next_level, cur_level
-        sort!(cur_level)
-    end
-    return parents, visited
-end
+"""
+    mainpath(g, start, weights::Vector{<:Real}, FBMP())
 
+Compute the main path or main path network for graph `g` traversing both forward and 
+backward starting at nodes `start` and using node weights given as vector `weights` 
+for neighbor selection.
+"""
 function mainpath(
     g::AbstractGraph{T}, 
     start::Vector{T}, 
     weights::Vector{<:Real},
     ::FBMP) where T <: Integer
 
-    parents_fwd, visited_fwd = bfs_multi(g, start, (g, v) -> vmax_outneighbors(g, v, weights))
-    parents_bwd, visited_bwd = bfs_multi(g, start, (g, v) -> vmax_inneighbors(g, v, weights))
+    parents_fwd = bfs_multi(g, start, (g, v) -> vmax_outneighbors(g, v, weights))
+    parents_bwd = bfs_multi(g, start, (g, v) -> vmax_inneighbors(g, v, weights))
 
     n = T(length(parents_fwd))
-    g = DiGraph{T}(n)
+    mp = DiGraph{T}(n)
 
     for (v, us) in enumerate(parents_fwd)
         @inbounds for u in us
             if u != v #&& !has_edge(g, u, v)
-                add_edge!(g, u, v)
+                add_edge!(mp, u, v)
             end
         end
     end
 
     for (v, us) in enumerate(parents_bwd)
         @inbounds for u in us
-            if u != v #&& !has_edge(g, u, v)
-                add_edge!(g, v, u)
+            if u != v
+                add_edge!(mp, v, u)
             end
         end
     end
 
-    return g
+    vs = findall(degree(mp) .> 0)
+    mp, _ = induced_subgraph(mp, vs)
+    
+    return MainPathResult(mp, vs)
 end
 
+"""
+    mainpath(g, start, weights::Matrix{<:Real}, FBMP())
+
+Compute the main path or main path network for graph `g` traversing both forward and 
+backward starting at nodes `start` and using edge weights given as matrix `weights` 
+for neighbor selection.
+"""
 function mainpath(
     g::AbstractGraph{T}, 
     start::Vector{T}, 
     weights::AbstractMatrix{<:Real},
     ::FBMP) where T <: Integer
 
-    parents_fwd, visited_fwd = bfs_multi(g, start, (g, v) -> emax_outneighbors(g, v, weights))
-    parents_bwd, visited_bwd = bfs_multi(g, start, (g, v) -> emax_inneighbors(g, v, weights))
+    parents_fwd = bfs_multi(g, start, (g, v) -> emax_outneighbors(g, v, weights))
+    parents_bwd = bfs_multi(g, start, (g, v) -> emax_inneighbors(g, v, weights))
 
     n = T(length(parents_fwd))
-    g = DiGraph{T}(n)
+    mp = DiGraph{T}(n)
 
     for (v, us) in enumerate(parents_fwd)
         @inbounds for u in us
             if u != v #&& !has_edge(g, u, v)
-                add_edge!(g, u, v)
+                add_edge!(mp, u, v)
             end
         end
     end
@@ -133,10 +83,13 @@ function mainpath(
     for (v, us) in enumerate(parents_bwd)
         @inbounds for u in us
             if u != v #&& !has_edge(g, u, v)
-                add_edge!(g, v, u)
+                add_edge!(mp, v, u)
             end
         end
     end
 
-    return g
+    vs = findall(degree(mp) .> 0)
+    mp, _ = induced_subgraph(mp, vs)
+    
+    return MainPathResult(mp, vs)
 end
