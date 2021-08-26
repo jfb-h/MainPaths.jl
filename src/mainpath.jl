@@ -10,14 +10,19 @@ function Base.show(io::IO, mp::MainPathResult)
     println(io, "MainPath with $(nv(mp.mainpath)) vertices and $(ne(mp.mainpath)) edges.")
 end
 
+"""
+Struct representing a forward-backward main path traversal. 
+This doesn't contain any information but is used for dispatch
+in the `mainpath()` methods. 
+"""
 struct FBMP <: MainPathAlgorithm end
 
 """
     mainpath(g, start, weights::Vector{<:Real}, FBMP())
 
-Compute the main path or main path network for graph `g` traversing both forward and 
+Compute the main path or network of main paths for graph `g`, traversing both forward and 
 backward starting at nodes `start` and using node weights given as vector `weights` 
-for neighbor selection.
+for neighbor selection during traversal.
 """
 function mainpath(
     g::AbstractGraph{T}, 
@@ -56,9 +61,9 @@ end
 """
     mainpath(g, start, weights::Matrix{<:Real}, FBMP())
 
-Compute the main path or main path network for graph `g` traversing both forward and 
+Compute the main path or main path network for graph `g`, traversing both forward and 
 backward starting at nodes `start` and using edge weights given as matrix `weights` 
-for neighbor selection.
+for neighbor selection during traversal.
 """
 function mainpath(
     g::AbstractGraph{T}, 

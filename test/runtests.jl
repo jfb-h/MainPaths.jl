@@ -25,29 +25,6 @@ function directed_star_graph(N)
     g
 end
 
-function plot_testgraph(g; eweights=nothing, vweights=nothing)
-    x = [1,1,2,2,3,3,4,4,4,4,4]
-    y = [2,4,2,4,2,3,1,2,3,4,5]
-    layoutfun(g) = Point.(zip(x, y))
-
-    !isnothing(eweights) && (eweights = [eweights[src(e), dst(e)] for e in edges(g)])
-    
-    nlabel = string.(1:nv(g)) 
-    elabel = string.(1:ne(g)) 
-    isnothing(vweights) || (nlabel = nlabel .* " : " .* string.(round.(vweights, digits=2)))
-    isnothing(eweights) || (elabel = elabel .* " : " .* string.(round.(eweights, digits=2)))
-    
-    f, ax, p = graphplot(g, layout=layoutfun, nlabels=nlabel, elabels=elabel,
-              nlabels_textsize=12, elabels_textsize=12,
-              nlabels_color=:blue, elabels_color=:red,
-              nlabels_align=(:center, :top), nlabels_distance=5,
-              arrow_shift=.8)
-    
-    hidedecorations!(ax); hidespines!(ax)
-    
-    f
-end
-
 testgraph = LightGraphs.SimpleDiGraph(A)
 
 ew_spc, vw_spc, tf_spc = MainPaths.weights_spc(testgraph, normalize=false)
