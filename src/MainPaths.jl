@@ -6,8 +6,8 @@ export mainpath
 export FBMP
 
 include("utils.jl")
-include("spc_weights.jl")
-include("genetic_knowper.jl")
+include("weights_spc.jl")
+include("weights_gkp.jl")
 include("mainpath.jl")
 
 end

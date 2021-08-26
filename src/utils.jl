@@ -54,11 +54,11 @@ end
 """
     bfs_multi(g, source, neighborfn)
 
-Traverse graph `g` starting at vertices `source` and choosing neighbors 
-to visit according to `neighborfn`.
+Traverse graph `g` via breadth-first search starting at vertices `source` and 
+choosing neighbors to visit according to `neighborfn`.
 
 
-This is a modified breadth-first search traversal algorithm where instances of 
+This is a modified breadth-first search traversal where instances of 
 a vertex being visited multiple times by different parents are recorded. 
 This function was modified from the LightGraphs bfs algorithm.
 """
