@@ -36,7 +36,7 @@ A = [
 julia> g = SimpleDiGraph(A)
 {11, 12} directed simple Int64 graph
 
-julia> eweights, vweighs, totalflow = MainPaths.spc_weights(g, normalize=false);
+julia> eweights, vweighs, flow = MainPaths.spc_weights(g, normalize=false);
 
 julia> mp = mainpath(testgraph, [1,2], eweights, :FBMP())
 MainPath with 8 vertices and 9 edges.
