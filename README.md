@@ -17,6 +17,8 @@ julia> using MainPaths
 
 ## Example
 
+First, define an example graph:
+
 ```julia
 
 using LightGraphs, MainPaths
@@ -37,7 +39,10 @@ A = [
 
 julia> g = SimpleDiGraph(A)
 {11, 12} directed simple Int64 graph
+```
 
+Then, specify the main path weights and traversal algorithm and compute the main path:
+```
 julia> weight = SPCEdge(normalize=false)
 SPCEdge(false)
 
