@@ -20,7 +20,7 @@ To get started, you can then run:
 
 ## Example
 
-As a showcase of the package's functionality, we compute the forward local main path based on SPC weights of a simple example graph:
+As a showcase of the package's functionality, we compute the forward local main path based on SPC weights for a simple example graph:
 
 First, define the example graph:
 
@@ -45,14 +45,14 @@ julia> g = SimpleDiGraph(A)
 {11, 12} directed simple Int64 graph
 ```
 
-First, we need to specify how to compute traversal weights:
+Then, we specify how to compute traversal weights:
 
 ```julia
 julia> weight = SPCEdge(normalize=false)
 SPCEdge(false)
 ```
 
-Then we specify how we want to perform the main path traversal and at which vertices we want to start the traversal:
+And finally, we specify how we want to perform the main path traversal and at which vertices we want to start the traversal:
 
 ```julia
 julia> start = [1,2];
