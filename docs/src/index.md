@@ -12,13 +12,11 @@ From the julia REPL, type `]` to enter the Pkg REPL and run:
 pkg> add https://github.com/jfb-h/MainPaths.jl
 ```
 
-You can then run:
+To get started, you can then run:
 
 ```julia
 >julia using MainPaths
 ```
-
-to get started.
 
 ## Example
 

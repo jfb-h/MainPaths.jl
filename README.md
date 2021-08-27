@@ -1,7 +1,6 @@
 # MainPaths
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://jfb-h.github.io/MainPaths.jl/stable)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://jfb-h.github.io/MainPaths.jl/dev)
-[![Coverage](https://codecov.io/gh/jfb-h/MainPaths.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/jfb-h/MainPaths.jl)
 
 *A package for computing main paths in the Julia programming language.*
 
