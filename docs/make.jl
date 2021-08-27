@@ -2,7 +2,7 @@ using Documenter
 using MainPaths
 
 makedocs(
-    sitename = "MainPaths",
+    sitename = "MainPaths.jl",
     format = Documenter.HTML(),
     modules = [MainPaths]
 )

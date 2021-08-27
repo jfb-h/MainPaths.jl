@@ -14,7 +14,8 @@ end
 
 Compute the main path (or network of main paths) for graph g, utilizing edge/vertex weights 
 as specified by `weights` and performing main path traversal according to `traversal`.
-`weights` can be specified as any of the available `MainPathWeight` types and 
+`weights` and `traversal` can be specified as any of the available `MainPathWeight` and `MainPathTraversal` 
+types, respectively. 
 """
 function mainpath(g, weights::MainPathWeight, traversal::MainPathTraversal)
     mp = traversal(g, weights)

@@ -38,10 +38,16 @@ A = [
 julia> g = SimpleDiGraph(A)
 {11, 12} directed simple Int64 graph
 
-julia> eweights, vweighs, flow = MainPaths.weights_spc(g, normalize=false);
+julia> weight = SPCEdge(normalize=false)
+SPCEdge(false)
 
-julia> mp = mainpath(testgraph, [1,2], eweights, FBMP())
-MainPath with 8 vertices and 9 edges.
+julia> start = [1,2];
+
+julia> traversal = ForwardLocal(start)
+ForwardLocal{Int64}([1, 2])
+
+julia> mainpath(g, weight, traversal)
+MainPath with 9 vertices and 8 edges.
 ```
 
 

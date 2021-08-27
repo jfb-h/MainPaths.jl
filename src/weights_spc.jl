@@ -101,7 +101,7 @@ end
 """
     SPCVertex(normalize=false)(g)
 
-Struct representing Search Path Cout (SPC) edge weights, as defined in Batagelj (2003). 
+Struct representing Search Path Cout (SPC) vertex weights, as defined in Batagelj (2003). 
 The argument `normalize` indicates whether weights should be normalized relative to the 
 total SPC flow. The struct can be called to compute weights directly or
 can be passed to the `mainpath` function for dispatch.

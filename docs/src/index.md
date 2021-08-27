@@ -20,10 +20,9 @@ To get started, you can then run:
 
 ## Example
 
-As a showcase of the package's functionality, we compute the forward-backward main path based on SPC weights of a simple
-example graph:
+As a showcase of the package's functionality, we compute the forward local main path based on SPC weights of a simple example graph:
 
-First, define the graph:
+First, define the example graph:
 
 ```julia
 using LightGraphs, MainPaths
@@ -46,17 +45,42 @@ julia> g = SimpleDiGraph(A)
 {11, 12} directed simple Int64 graph
 ```
 
-Then compute traversal weights:
+First, we need to specify how to compute traversal weights:
 
 ```julia
-julia> eweights, vweighs, flow = MainPaths.weights_spc(g, normalize=false);
+julia> weight = SPCEdge(normalize=false)
+SPCEdge(false)
 ```
-And finally, compute the main path starting at nodes `1` and `2` (we here perform the main path traversal using edge weights, but vertex weights would also be possible):
+
+Then we specify how we want to perform the main path traversal and at which vertices we want to start the traversal:
 
 ```julia
-julia> start = [1, 2];
-julia> mp = mainpath(testgraph, start, eweights, FBMP())
-MainPath with 8 vertices and 9 edges.
+julia> start = [1,2];
+julia> traversal = ForwardLocal(start)
+ForwardLocal{Int64}([1, 2])
+```
+Now we can compute the main path:
+
+```julia
+julia> mp = mainpath(g, weight, traversal)
+Mainpath with 9 vertices and 8 edges.
+```
+The `mainpath` function returns a `MainPathResult`, which just wraps a `SimpleDiGraph` representing the main path network and a vector indicating the indices of the main path vertices in the original graph:
+
+```julia
+julia> mp.mainpath
+{9, 8} directed simple Int64 graph
+julia> mp.vertices
+9-element Vector{Int64}:
+  1
+  2
+  3
+  4
+  5
+  6
+  8
+  9
+ 10
 ```
 
 ## API
