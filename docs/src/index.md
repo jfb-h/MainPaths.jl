@@ -70,6 +70,7 @@ The `mainpath` function returns a `MainPathResult`, which just wraps a `SimpleDi
 ```julia
 julia> mp.mainpath
 {9, 8} directed simple Int64 graph
+
 julia> mp.vertices
 9-element Vector{Int64}:
   1
