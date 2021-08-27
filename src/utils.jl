@@ -1,55 +1,21 @@
-"""
-    vmax_outneighbors(g, v, w)
+function remove_isolates(g)
+    vs = findall(degree(g) .> 0)
+    induced_subgraph(g, vs)
+end
 
-Obtain an array with the outneighbor(s) of vertex `v` that score highest 
-in terms of vertex weights `w`.
-"""
-function vmax_outneighbors(g::AbstractGraph{T}, v::S, w::AbstractVector{U}) where {S,T <: Integer} where {U <: Real}
-    nb = outneighbors(g, v)
+function vmax_neighbors(g, v, w, nbfun)
+    nb = nbfun(g, v)
     length(nb) == 0 && return nb
     wnb = w[nb]
     return nb[wnb .== maximum(wnb)]
 end
 
-"""
-    vmax_inneighbors(g, v, w)
-
-Obtain an array with the inneighbor(s) of vertex `v` that score highest 
-in terms of vertex weights `w`.
-"""
-function vmax_inneighbors(g::AbstractGraph{T}, v::S, w::AbstractVector{U}) where {S,T <: Integer} where {U <: Real}  
-    nb = inneighbors(g, v)
-    length(nb) == 0 && return nb
-    wnb = w[nb]
-    return nb[wnb .== maximum(wnb)]
-end
-
-"""
-    emax_outneighbors(g, v, w)
-
-Obtain an array with the outneighbor(s) of vertex `v` that are connected with the 
-maximum weight edge in terms of edgeweight `w`.
-"""
-function emax_outneighbors(g::AbstractGraph{T}, v::S, w::AbstractMatrix{U}) where {S,T <: Integer} where {U <: Real}
-    nb = outneighbors(g, v)
+function emax_neighbors(g, v, w, nbfun)
+    nb = nbfun(g, v)
     length(nb) == 0 && return nb
     wnb = w[v, nb]
     nb[wnb .== maximum(wnb)]
 end
-
-"""
-    emax_inneighbors(g, v, w)
-
-Obtain an array with the outneighbor(s) of vertex `v` that are connected with the 
-maximum weight edge in terms of edgeweight `w`. 
-"""
-function emax_inneighbors(g::AbstractGraph{T}, v::S, w::AbstractMatrix{U}) where {S,T <: Integer} where {U <: Real}
-    nb = inneighbors(g, v)
-    length(nb) == 0 && return nb
-    wnb = w[nb, v]
-    nb[wnb .== maximum(wnb)]
-end
-
 
 """
     bfs_multi(g, source, neighborfn)

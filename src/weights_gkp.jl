@@ -85,32 +85,38 @@ function _gkp_local(g::AbstractGraph{T}) where T <: Integer
 
 end 
 
-"""
-    weights_gkp(g, normalize=:none)
 
-Compute the genetic knowledge persistence scores for all nodes in `g`. 
-    
+"""
+    GKP(normalize=:none)(g)
+
+Struct representing Genetic Knowledge Persistence (GKP) vertex weights.   
 This is a modified version of the method proposed in Martinelli & Nomaler (2014) 
 where citations from future patents to patents before the curent layer are not ignored
 in the persistence computation.
+
+The struct can be called to compute weights directly or
+can be passed to the `mainpath` function for dispatch.
 """
-function weights_gkp(g::AbstractGraph{T}; normalize::Symbol=:none) where T <: Integer
-    if normalize == :global 
+Base.@kwdef struct GKP <: MainPathVertexWeight 
+    normalize::Symbol = :none
+end
+
+function (x::GKP)(g)
+    if x.normalize == :global 
         res = _gkp_global(g)
         return res ./ maximum(res)
-    elseif normalize == :local
+    elseif x.normalize == :local
         res, layers = _gkp_local(g)
         for l in unique(layers)
             res[layers .== l] .= res[layers .== l] ./ maximum(res[layers .== l])
         end
         res[isnan.(res)] .= 0.0
         return res
-    elseif normalize == :none
+    elseif x.normalize == :none
         return _gkp_global(g)
     else
         throw(ArgumentError("Viable options for normalize are :global, :local or :none."))
     end
-end
+end  
 
 
-    

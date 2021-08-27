@@ -54,7 +54,7 @@ end
 function plot_testgraph_mainpath(g, mp::MainPaths.MainPathResult; 
                                  eweights=nothing, vweights=nothing)
     
-                                 x = [1,1,2,2,3,3,4,4,4,4,4]
+    x = [1,1,2,2,3,3,4,4,4,4,4]
     y = [2,4,2,4,2,3,1,2,3,4,5]
     layoutfun(g) = Point.(zip(x, y))
 
