@@ -48,7 +48,6 @@ As a first step, we then specify how to compute traversal weights:
 julia> weight = SPCEdge(normalize=false)
 SPCEdge(false)
 ```
-
 We then specify how we want to perform the main path traversal and at which vertices we want to start the traversal:
 
 ```julia
