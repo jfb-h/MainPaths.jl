@@ -22,13 +22,12 @@ to get started.
 
 ## Example
 
-As a showcase of the package's functionality, we compute the forward-backward main path based on SPC weight sof a simple
+As a showcase of the package's functionality, we compute the forward-backward main path based on SPC weights of a simple
 example graph:
 
 First, define the graph:
 
 ```julia
-
 using LightGraphs, MainPaths
 
 A = [
