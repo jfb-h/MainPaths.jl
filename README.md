@@ -7,7 +7,7 @@
 
 ## Installation
 
-The package is currently not registered but can be added via github link.
+The package is currently not registered but can be added directly via the github package URL.
 From the julia REPL, type `]` to enter the Pkg REPL and run:
 
 ```julia 
