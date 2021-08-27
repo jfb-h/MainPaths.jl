@@ -28,7 +28,7 @@ end
 testgraph = LightGraphs.SimpleDiGraph(A)
 
 ew_spc, vw_spc, tf_spc = MainPaths.weights_spc(testgraph, normalize=false)
-vw_gkp = MainPaths.genetic_knowper(testgraph)
+vw_gkp = MainPaths.weights_gkp(testgraph)
 
 @testset "utils" begin
     vweights = [1,2,3,4,5]
@@ -64,9 +64,9 @@ end
 
 @testset "genetic knowledge persistence" begin
     vw_gkp_true = [1.25, 3.75, 2.5, 2.5, 1.5, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-    vw_gkp_none = MainPaths.genetic_knowper(testgraph, normalize=:none)
-    vw_gkp_global = MainPaths.genetic_knowper(testgraph, normalize=:global)
-    vw_gkp_local = MainPaths.genetic_knowper(testgraph, normalize=:local)
+    vw_gkp_none = MainPaths.weights_gkp(testgraph, normalize=:none)
+    vw_gkp_global = MainPaths.weights_gkp(testgraph, normalize=:global)
+    vw_gkp_local = MainPaths.weights_gkp(testgraph, normalize=:local)
     @test vw_gkp_none == vw_gkp_true
     @test vw_gkp_global == vw_gkp_true ./ maximum(vw_gkp_true)
     @test vw_gkp_local[2] == 1.0
