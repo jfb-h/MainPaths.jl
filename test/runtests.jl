@@ -21,8 +21,8 @@ testgraph = LightGraphs.SimpleDiGraph(A)
 
 
 @testset "utils" begin
-    eweights = SPCEdge(false)(testgraph)
-    vweights = SPCVertex(false)(testgraph)
+    eweights = SPCEdge(:none)(testgraph)
+    vweights = SPCVertex(:none)(testgraph)
 
     @test MainPaths.emax_neighbors(testgraph, 5, eweights, outneighbors) == [8, 9] 
     @test MainPaths.vmax_neighbors(testgraph, 9, vweights, inneighbors) == [5]
@@ -35,8 +35,8 @@ testgraph = LightGraphs.SimpleDiGraph(A)
 end
 
 @testset "SPC" begin
-    eweights = SPCEdge(false)(testgraph)
-    vweights = SPCVertex(false)(testgraph)
+    eweights = SPCEdge(:none)(testgraph)
+    vweights = SPCVertex(:none)(testgraph)
     ew_spc_true = MainPaths.weights_matrix(testgraph, [3, 3, 4, 4, 2, 2, 1, 1, 2, 2, 1, 1])
     vw_spc_true = [3, 7, 6, 4, 4, 2, 2, 2, 3, 2, 1]
     Nm, Np, tf = MainPaths._weights_spc_raw(testgraph)
@@ -61,7 +61,7 @@ end
 
 @testset "mainpath" begin
     gkp = GKP(:none)
-    spc = SPCEdge(false)
+    spc = SPCEdge(:none)
     fwd = ForwardLocal([1,2])
     bwd = BackwardLocal([10])
     fbl = ForwardBackwardLocal([5])
