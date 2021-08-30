@@ -1,8 +1,7 @@
-
-
 struct MainPathResult{T}
     mainpath::SimpleDiGraph{T}
     vertices::Vector{T}
+    start::Vector{T}
 end
 
 function Base.show(io::IO, mp::MainPathResult) 
@@ -19,6 +18,9 @@ types, respectively.
 """
 function mainpath(g, weights::MainPathWeight, traversal::MainPathTraversal)
     mp = traversal(g, weights)
-    MainPathResult(remove_isolates(mp)...)
+    mp, vs = remove_isolates(mp)
+    s = Set(traversal.start)
+    start = findall(v -> v in s, vs)
+    MainPathResult(mp, vs, start)
 end
 

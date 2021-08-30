@@ -45,8 +45,8 @@ julia> g = SimpleDiGraph(A)
 As a first step, we then specify how to compute traversal weights:
 
 ```julia
-julia> weight = SPCEdge(normalize=false)
-SPCEdge(false)
+julia> weight = SPCEdge(normalize=:none)
+SPCEdge(:none)
 ```
 We then specify how we want to perform the main path traversal and at which vertices we want to start the traversal:
 
@@ -62,7 +62,7 @@ Now we can compute the main path:
 julia> mp = mainpath(g, weight, traversal)
 Mainpath with 9 vertices and 8 edges.
 ```
-The `mainpath` function returns a `MainPathResult`, which just wraps a `SimpleDiGraph` representing the main path network and a vector indicating the indices of the main path vertices in the original graph:
+The `mainpath` function returns a `MainPathResult`, which just wraps a `SimpleDiGraph` representing the main path network, a vector indicating the indices of the main path vertices in the original graph, and a vector indicating the nodes at which the main path traversal was started:
 
 ```julia
 julia> mp.mainpath
@@ -79,6 +79,11 @@ julia> mp.vertices
   8
   9
  10
+
+julia> mp.start
+2-element Vector{Int64}:
+ 1
+ 2
 ```
 
 ## API

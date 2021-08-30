@@ -79,4 +79,5 @@ end
     @test mp2.vertices == [1,2,3,4,5,6,8,9,10]
     @test mp3.vertices == [2,4,6,10]
     @test mp4.vertices == [1,2,3,5,8,9]
+    @test mp1.vertices[mp1.start] == [1,2]
 end

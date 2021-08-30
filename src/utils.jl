@@ -16,7 +16,7 @@ function emax_neighbors(g, v, w, nbfun)
     if nbfun == inneighbors
         wnb = w[nb, v]
     else
-        wnb = [v, nb]
+        wnb = w[v, nb]
     end      
     nb[wnb .== maximum(wnb)]
 end
