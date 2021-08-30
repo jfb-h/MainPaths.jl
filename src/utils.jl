@@ -12,8 +12,12 @@ end
 
 function emax_neighbors(g, v, w, nbfun)
     nb = nbfun(g, v)
-    length(nb) == 0 && return nb
-    wnb = w[v, nb]
+    length(nb) == 0 && return j
+    if nbfun == inneighbors
+        wnb = w[nb, v]
+    else
+        wnb = [v, nb]
+    end      
     nb[wnb .== maximum(wnb)]
 end
 

@@ -74,15 +74,17 @@ end
 
 function _weights_spc_edges(g, normalize)
     N_m, N_p, tf = _weights_spc_raw(g)
-    
+
     ew = map(edges(g)) do e
         N_m[src(e)] * N_p[dst(e)]
     end
 
-    if normalize == :log
-        return log.(ew)
+    if normalize == :none
+        ew = ew
+    elseif normalize == :log
+        ew = log.(ew)
     elseif normalize == :totalflow
-        return ew /= tf
+        ew = ew /= tf
     else 
         error("normalize needs to be :none, :log, or :totalflow.")
     end

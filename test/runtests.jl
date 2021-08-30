@@ -36,6 +36,8 @@ end
 
 @testset "SPC" begin
     eweights = SPCEdge(:none)(testgraph)
+    eweights_log = SPCEdge(:log)(testgraph)
+    eweights_tf = SPCEdge(:totalflow)(testgraph)
     vweights = SPCVertex(:none)(testgraph)
     ew_spc_true = MainPaths.weights_matrix(testgraph, [3, 3, 4, 4, 2, 2, 1, 1, 2, 2, 1, 1])
     vw_spc_true = [3, 7, 6, 4, 4, 2, 2, 2, 3, 2, 1]
@@ -45,6 +47,8 @@ end
     @test all(eweights .== ew_spc_true)
     @test all(vweights .== vw_spc_true)
     @test tf == 10.0
+    @test all(eweights_log.nzval .== log.(ew_spc_true.nzval))
+    @test all(eweights_tf.nzval .== ew_spc_true.nzval / tf)
 end
 
 @testset "GKP" begin

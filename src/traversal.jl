@@ -22,9 +22,9 @@ struct ForwardBackwardLocal{T} <: MainPathTraversal
     start::Vector{T}
 end
 
-function (x::ForwardBackwardLocal)(g, weights)
-    nbfun = _get_nbfun(weights)
-    w = weights(g)
+function (x::ForwardBackwardLocal)(g, weight)
+    nbfun = _get_nbfun(weight)
+    w = weight(g)
 
     parents_forward  = bfs_multi(g, x.start, (g, v) -> nbfun(g, v, w, outneighbors))
     parents_backward = bfs_multi(g, x.start, (g, v) -> nbfun(g, v, w, inneighbors))
