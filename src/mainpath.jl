@@ -23,4 +23,3 @@ function mainpath(g, weights::MainPathWeight, traversal::MainPathTraversal)
     start = findall(v -> v in s, vs)
     MainPathResult(mp, vs, start)
 end
-
