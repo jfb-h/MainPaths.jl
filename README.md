@@ -4,7 +4,7 @@
 
 *A package for computing main paths in the Julia programming language.*
 
-**WARNING: THIS PACKAGE IS IN AN EARLY STAGE AND MIGHT BREAK OR CHANGE UNEXPECTEDLY**
+**WARNING: THIS PACKAGE IS IN AN EARLY STAGE AND MIGHT BREAK OR CHANGE WITHOUT WARNING**
 
 ## Installation
 
@@ -46,7 +46,7 @@ julia> g = SimpleDiGraph(A)
 Then, specify the main path weights and traversal algorithm and compute the main path:
 ```julia
 julia> weight = SPCEdge(normalize=:none)
-SPCEdge(false)
+SPCEdge(:none)
 
 julia> start = [1,2];
 
