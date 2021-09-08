@@ -4,7 +4,7 @@
 
 *A package for computing main paths in the Julia programming language.*
 
-**WARNING: THIS PACKAGE IS IN AN EARLY STAGE AND MIGHT BREAK OR CHANGE WITHOUT WARNING**
+**THIS PACKAGE IS IN AN EARLY STAGE AND MIGHT BREAK OR CHANGE WITHOUT WARNING**
 
 ## Installation
 
