@@ -23,3 +23,6 @@ function mainpath(g, weights::MainPathWeight, traversal::MainPathTraversal)
     start = findall(v -> v in s, vs)
     MainPathResult(mp, vs, start)
 end
+
+LightGraphs.nv(mp::MainPathResult) = nv(mp.mainpath)
+LightGraphs.ne(mp::MainPathResult) = ne(mp.mainpath)

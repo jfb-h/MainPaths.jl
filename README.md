@@ -4,6 +4,8 @@
 
 *A package for computing main paths in the Julia programming language.*
 
+**WARNING: THIS PACKAGE IS IN AN EARLY STAGE AND MIGHT BREAK OR CHANGE UNEXPECTEDLY**
+
 ## Installation
 
 The package is currently not registered but can be added directly via the github package URL.

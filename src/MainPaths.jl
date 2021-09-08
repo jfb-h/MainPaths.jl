@@ -11,5 +11,6 @@ include("weights_spc.jl")
 include("weights_gkp.jl")
 include("traversal.jl")
 include("mainpath.jl")
+include("segments.jl")
 
 end

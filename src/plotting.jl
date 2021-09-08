@@ -63,7 +63,7 @@ function plot_testgraph_mainpath(g, mp::MainPaths.MainPathResult;
     nlabel = string.(1:nv(g)) 
     elabel = string.(1:ne(g)) 
     isnothing(vweights) || (nlabel = nlabel .* " : " .* string.(round.(vweights, digits=2)))
-    isnothing(eweights) || (elabel = elabel .* " : " .* string.(round.(eweights, digits=2)))
+    isnothing(eweights) || (elabel = string.(round.(eweights, digits=2)))
     
     vertexcolor = [v in Set(mp.vertices) ? :red : :black for v in 1:nv(g)] 
     vertexsize  = [v in Set(mp.vertices) ? 15 : 10 for v in 1:nv(g)] 
