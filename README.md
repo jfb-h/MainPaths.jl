@@ -45,7 +45,7 @@ julia> g = SimpleDiGraph(A)
 
 Then, specify the main path weights and traversal algorithm and compute the main path:
 ```julia
-julia> weight = SPCEdge(normalize=false)
+julia> weight = SPCEdge(normalize=:none)
 SPCEdge(false)
 
 julia> start = [1,2];
