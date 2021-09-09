@@ -57,5 +57,8 @@ julia> mainpath(g, weight, traversal)
 MainPath with 9 vertices and 8 edges.
 ```
 
+## Literature
+
+[Batagelj (2003): Efficient Algorithms for Citation Netoworks. arXiv:cs/0309023](https://arxiv.org/abs/cs/0309023)
 
 
