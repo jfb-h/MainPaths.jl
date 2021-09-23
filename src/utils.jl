@@ -64,21 +64,3 @@ function bfs_multi(g::AbstractGraph{T}, source, neighborfn::Function) where T
     return parents
 end
 
-"""
-    meanweight(mp, w)
-
-Compute the mean weight of the edges in main path `mp` as contained
-in the weights matrix `w`, as computed from the original graph which
-the main path was extracted from. 
-"""
-function meanweight(mp::MainPathResult, w::AbstractMatrix)
-    res = 0.0
-    for e in edges(mp.mainpath)
-        s = mp.vertices[src(e)]
-        d = mp.vertices[dst(e)]
-        res += w[s, d]
-    end
-
-    res / ne(mp)
-end
-

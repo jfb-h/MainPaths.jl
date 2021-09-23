@@ -26,3 +26,17 @@ end
 
 LightGraphs.nv(mp::MainPathResult) = nv(mp.mainpath)
 LightGraphs.ne(mp::MainPathResult) = ne(mp.mainpath)
+
+"""
+    edgeweights(mp, w)
+
+Return the weights of all edges in the mainpath `mp` from the weights matrix `w` containing
+traversal weights for the original graph.
+"""
+function edgeweights(mp::MainPathResult, w::AbstractMatrix)
+    map(edges(mp.mainpath)) do e
+        s = mp.vertices[src(e)]
+        d = mp.vertices[dst(e)]
+        w[s, d]
+    end
+end
