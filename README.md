@@ -23,9 +23,9 @@ First, define an example graph:
 
 ```julia
 
-using LightGraphs, MainPaths
+julia> using LightGraphs, MainPaths
 
-A = [
+julia> A = [
  0  0  1  0  0  0  0  0  0  0  0
  0  0  1  1  0  0  0  0  0  0  0
  0  0  0  0  1  0  1  0  0  0  0
