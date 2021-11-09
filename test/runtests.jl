@@ -1,6 +1,6 @@
 using MainPaths
 using Test
-using LightGraphs
+using Graphs
 using SparseArrays
 
 A = [
@@ -17,7 +17,7 @@ A = [
  0  0  0  0  0  0  0  0  0  0  0
 ]
 
-testgraph = LightGraphs.SimpleDiGraph(A)
+testgraph = Graphs.SimpleDiGraph(A)
 
 
 @testset "utils" begin

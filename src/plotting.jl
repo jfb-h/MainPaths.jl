@@ -4,7 +4,7 @@ function plot_mainpath(g::SimpleDiGraph, mp::MainPaths.MainPathResult; layout=Gr
     vertexsize  = [v in Set(mp.vertices) ? 20 : 10 for v in 1:nv(g)] 
    
     mp_edges_mapped = map(edges(mp.mainpath)) do e
-        LightGraphs.Edge(mp.vertices[src(e)], mp.vertices[dst(e)])
+        Graphs.Edge(mp.vertices[src(e)], mp.vertices[dst(e)])
     end
 
     mp_edges_mapped = Set(mp_edges_mapped)
@@ -69,7 +69,7 @@ function plot_testgraph_mainpath(g, mp::MainPaths.MainPathResult;
     vertexsize  = [v in Set(mp.vertices) ? 15 : 10 for v in 1:nv(g)] 
    
     mp_edges_mapped = map(edges(mp.mainpath)) do e
-        LightGraphs.Edge(mp.vertices[src(e)], mp.vertices[dst(e)])
+        Graphs.Edge(mp.vertices[src(e)], mp.vertices[dst(e)])
     end
 
     mp_edges_mapped = Set(mp_edges_mapped)

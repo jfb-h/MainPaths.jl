@@ -23,7 +23,7 @@ First, define an example graph:
 
 ```julia
 
-julia> using LightGraphs, MainPaths
+julia> using Graphs, MainPaths
 
 julia> A = [
  0  0  1  0  0  0  0  0  0  0  0

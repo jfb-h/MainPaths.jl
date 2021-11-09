@@ -30,7 +30,7 @@ choosing neighbors to visit according to `neighborfn`.
 
 This is a modified breadth-first search traversal where instances of 
 a vertex being visited multiple times by different parents are recorded. 
-This function was modified from the LightGraphs bfs algorithm.
+This function was modified from the Graphs bfs algorithm.
 """
 function bfs_multi(g::AbstractGraph{T}, source, neighborfn::Function) where T
     n = nv(g)

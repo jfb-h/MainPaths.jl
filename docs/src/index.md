@@ -1,6 +1,6 @@
 # MainPaths.jl
 
-Welcome to MainPaths.jl, a Julia package for computing main paths built on top of the [LightGraphs.jl](https://github.com/JuliaGraphs/LightGraphs.jl) graph library.
+Welcome to MainPaths.jl, a Julia package for computing main paths built on top of the [Graphs.jl](https://github.com/JuliaGraphs/Graphs.jl) graph library.
 
 ## Getting started
 
@@ -23,7 +23,7 @@ To get started, you can then run:
 As a showcase of the package's functionality, we compute the forward local main path based on SPC weights for the following simple example graph:
 
 ```julia
-using LightGraphs, MainPaths
+using Graphs, MainPaths
 
 A = [
  0  0  1  0  0  0  0  0  0  0  0

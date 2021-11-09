@@ -1,5 +1,5 @@
 module MainPaths
-using LightGraphs
+using Graphs
 using SparseArrays
 
 export mainpath

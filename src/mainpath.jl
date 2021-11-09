@@ -24,8 +24,8 @@ function mainpath(g, weights::MainPathWeight, traversal::MainPathTraversal)
     MainPathResult(mp, vs, start)
 end
 
-LightGraphs.nv(mp::MainPathResult) = nv(mp.mainpath)
-LightGraphs.ne(mp::MainPathResult) = ne(mp.mainpath)
+Graphs.nv(mp::MainPathResult) = nv(mp.mainpath)
+Graphs.ne(mp::MainPathResult) = ne(mp.mainpath)
 
 """
     edgeweights(mp, w)

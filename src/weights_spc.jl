@@ -17,7 +17,7 @@ function add_source_target!(g::AbstractGraph{T}) where T <: Integer
     end
 end
 
-function N⁻(g::LightGraphs.SimpleDiGraph{T}, vseqt::Vector{T}) where T <: Integer
+function N⁻(g::Graphs.SimpleDiGraph{T}, vseqt::Vector{T}) where T <: Integer
     nV = length(vseqt)
     val = zeros(nV)
     val[vseqt[1]] = 1.0
@@ -28,7 +28,7 @@ function N⁻(g::LightGraphs.SimpleDiGraph{T}, vseqt::Vector{T}) where T <: Inte
     return val
 end
 
-function N⁺(g::LightGraphs.SimpleDiGraph{T}, vseqt::Vector{T}) where T <: Integer
+function N⁺(g::Graphs.SimpleDiGraph{T}, vseqt::Vector{T}) where T <: Integer
     nV = length(vseqt)
     val = zeros(nV)
     val[vseqt[nV]] = 1.0
@@ -46,9 +46,9 @@ function weights_matrix(g::AbstractGraph{T}, weights::AbstractVector{U}) where T
 end
 
 function _weights_spc_raw(g::AbstractGraph{T}) where T <: Integer
-    g = LightGraphs.SimpleDiGraph(g)
+    g = Graphs.SimpleDiGraph(g)
     add_source_target!(g)
-    vseqt = LightGraphs.topological_sort_by_dfs(g)
+    vseqt = Graphs.topological_sort_by_dfs(g)
     st = vseqt[[1, end]]
     N_m = N⁻(g, vseqt)
     N_p = N⁺(g, vseqt)
