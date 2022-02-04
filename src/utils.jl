@@ -64,3 +64,8 @@ function bfs_multi(g::AbstractGraph{T}, source, neighborfn::Function) where T
     return parents
 end
 
+function sparseweights(g::AbstractGraph{T}, weights::AbstractVector{U}) where T <: Integer where U <: Real
+    senders = [src(e) for e in edges(g)]
+    receivers = [dst(e) for e in edges(g)]
+    return sparse(senders, receivers, weights, nv(g), nv(g))
+end

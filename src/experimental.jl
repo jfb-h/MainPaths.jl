@@ -1,3 +1,8 @@
+module Experimental
+
+using Graphs
+using MainPaths: MainPathResult
+
 function findbranchpoints(g)
 	vs = findall(outdegree(g) .> 1)
 	idx = map(vs) do v
@@ -124,6 +129,4 @@ function meanweight(mp::MainPathResult, seg::MainPathSegment, w::AbstractMatrix)
     res / ne(path)
 end
 
-
-
-
+end
