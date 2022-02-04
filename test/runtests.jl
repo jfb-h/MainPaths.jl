@@ -39,9 +39,9 @@ end
     eweights_log = SPCEdge(:log)(testgraph)
     eweights_tf = SPCEdge(:totalflow)(testgraph)
     vweights = SPCVertex(:none)(testgraph)
-    ew_spc_true = MainPaths.weights_matrix(testgraph, [3, 3, 4, 4, 2, 2, 1, 1, 2, 2, 1, 1])
+    ew_spc_true = MainPaths.sparseweights(testgraph, [3, 3, 4, 4, 2, 2, 1, 1, 2, 2, 1, 1])
     vw_spc_true = [3, 7, 6, 4, 4, 2, 2, 2, 3, 2, 1]
-    Nm, Np, tf = MainPaths._weights_spc_raw(testgraph)
+    Nm, Np, tf = MainPaths.spc(MainPaths.standardize(testgraph, MainPaths.StandardForm))
 
     @test size(ew_spc_true) == (nv(testgraph), nv(testgraph))
     @test all(eweights .== ew_spc_true)
@@ -49,6 +49,17 @@ end
     @test tf == 10.0
     @test all(eweights_log.nzval .== log.(ew_spc_true.nzval))
     @test all(eweights_tf.nzval .== ew_spc_true.nzval / tf)
+end
+
+@testset "SPLC" begin
+    # test agains Pajek
+    eweights = SPLCEdge(:none)(testgraph)
+    vweights = SPLCVertex(:none)(testgraph)
+    ew_splc_true = MainPaths.sparseweights(testgraph, [3, 3, 4, 6, 3, 4, 2, 2, 4, 4, 3, 3]) 
+    vw_splc_true = [3, 7, 9, 8, 8, 6, 4, 5, 8, 6, 3]
+    
+    @test all(eweights .== ew_splc_true)
+    @test all(vweights .== vw_splc_true)
 end
 
 @testset "GKP" begin

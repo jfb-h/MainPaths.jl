@@ -2,20 +2,47 @@
 get_sources(g::AbstractGraph{T}) where T <: Integer = vertices(g)[indegree(g) .== 0]
 get_sinks(g::AbstractGraph{T})  where T <: Integer = vertices(g)[outdegree(g) .== 0]
 
-function add_source_target!(g::AbstractGraph{T}) where T <: Integer
-    sinks = get_sinks(g)
-    sources = get_sources(g)
+function add_source_target(g::AbstractGraph{T}) where T <: Integer
+    o = deepcopy(g)
+    sinks = get_sinks(o)
+    sources = get_sources(o)
 
-    add_vertex!(g)
+    add_vertex!(o)
     for source in sources
-        add_edge!(g, vertices(g)[end], source)
+        add_edge!(o, vertices(o)[end], source)
     end
 
-    add_vertex!(g)
+    add_vertex!(o)
     for sink in sinks
-        add_edge!(g, sink, vertices(g)[end])
+        add_edge!(o, sink, vertices(o)[end])
     end
+
+    # add_edge!(o, vertices(o)[end], vertices(o)[end-1])
+    
+    return o
 end
+
+function extend_splc!(g)
+    # This assumes standardform already, where the second to last vertex is the artificial source vertex.
+    s = vertices(g)[end-1]
+    for v in vertices(g)[1:end-2]
+        add_edge!(g, s, v)
+    end
+    return g 
+end
+
+abstract type AbstractStandardForm end
+
+struct StandardForm{T} <: AbstractStandardForm
+    g::AbstractGraph{T}
+end
+
+struct StandardFormSPLC{T} <: AbstractStandardForm
+    g::AbstractGraph{T}
+end
+
+standardize(g::AbstractGraph{T}, restype::Type{StandardForm}) where T <: Integer = restype(add_source_target(g))
+standardize(g::AbstractGraph{T}, restype::Type{StandardFormSPLC}) where T <: Integer = restype(extend_splc!(add_source_target(g)))
 
 function N⁻(g::Graphs.SimpleDiGraph{T}, vseqt::Vector{T}) where T <: Integer
     nV = length(vseqt)
@@ -39,57 +66,46 @@ function N⁺(g::Graphs.SimpleDiGraph{T}, vseqt::Vector{T}) where T <: Integer
     return val
 end
 
-function weights_matrix(g::AbstractGraph{T}, weights::AbstractVector{U}) where T <: Integer where U <: Real
-    senders = [src(e) for e in edges(g)]
-    receivers = [dst(e) for e in edges(g)]
-    return sparse(senders, receivers, weights, nv(g), nv(g))
+function spc(c::AbstractStandardForm)
+    g = c.g
+    vt = Graphs.topological_sort_by_dfs(g)
+    # st = vt[[1, end]]
+    st = last(vertices(g), 2)
+    Nm = N⁻(g, vt)
+    Np = N⁺(g, vt)
+    # i = findall(!in(st), vertices(g))
+    return Nm[1:end-2], Np[1:end-2], Np[st[1]]
 end
 
-function _weights_spc_raw(g::AbstractGraph{T}) where T <: Integer
-    g = Graphs.SimpleDiGraph(g)
-    add_source_target!(g)
-    vseqt = Graphs.topological_sort_by_dfs(g)
-    st = vseqt[[1, end]]
-    N_m = N⁻(g, vseqt)
-    N_p = N⁺(g, vseqt)
-    idx = [!(v in st) for v in vertices(g)]
-    rem_vertices!(g, st)
-    N_m[idx], N_p[idx], N_p[st[1]]
+function vertexweights(c::AbstractStandardForm, normalize)
+    Nm, Np, tf = spc(c)
+    w = Nm .* Np
+        
+    if normalize == :none
+        return w
+    elseif normalize == :log
+        return log.(w)
+    else normalize == :totalflow
+        return w /= tf
+    end 
 end
 
-function _weights_spc_vertices(g, normalize)
-    N_m, N_p, tf = _weights_spc_raw(g)
-    vw = N_m .* N_p
+function edgeweights(g::AbstractGraph, c::AbstractStandardForm, normalize)
+    Nm, Np, tf = spc(c)
+        
+    w = map(edges(g)) do e
+        Nm[src(e)] * Np[dst(e)]
+    end
+
+    if normalize == :none
+        w = w
+    elseif normalize == :log
+        w = log.(w)
+    else normalize == :totalflow
+        w = w /= tf
+    end
     
-    if normalize == :none
-        return vw
-    elseif normalize == :log
-        return log.(vw)
-    elseif normalize == :totalflow
-        return vw /= tf
-    else 
-        error("normalize needs to be :none, :log, or :totalflow.")
-    end
-end
-
-function _weights_spc_edges(g, normalize)
-    N_m, N_p, tf = _weights_spc_raw(g)
-
-    ew = map(edges(g)) do e
-        N_m[src(e)] * N_p[dst(e)]
-    end
-
-    if normalize == :none
-        ew = ew
-    elseif normalize == :log
-        ew = log.(ew)
-    elseif normalize == :totalflow
-        ew = ew /= tf
-    else 
-        error("normalize needs to be :none, :log, or :totalflow.")
-    end
-
-    weights_matrix(g, ew)
+    return sparseweights(g, w)
 end
 
 
@@ -114,7 +130,7 @@ Base.@kwdef struct SPCEdge <: MainPathEdgeWeight
     normalize::Symbol = :log
 end
 
-(x::SPCEdge)(g) = _weights_spc_edges(g, x.normalize)
+(x::SPCEdge)(g) = edgeweights(g, standardize(g, StandardForm), x.normalize)
 
 """
     SPCVertex(normalize=:log)(g)
@@ -131,4 +147,38 @@ Base.@kwdef struct SPCVertex <: MainPathVertexWeight
     normalize::Symbol = :log
 end
 
-(x::SPCVertex)(g) = _weights_spc_vertices(g, x.normalize)
+(x::SPCVertex)(g) = vertexweights(standardize(g, StandardForm), x.normalize)
+
+
+"""
+    SPLCEdge(normalize=:log)(g)
+
+Struct representing Search Path Link Count edge weights, as defined in Batagelj (2003).
+`normalize=:totalflow` indicates that weights should be normalized relative to the 
+total SPLC flow, `normalize=:log` indicates that the logarithm of weights is returned.
+Set `normalize` to :none to indicate that weights should not be transformed.
+
+The struct can be called to compute weights directly or
+can be passed to the `mainpath` function for dispatch.
+"""
+Base.@kwdef struct SPLCEdge <: MainPathVertexWeight
+    normalize::Symbol = :log
+end
+
+(x::SPLCEdge)(g) = edgeweights(g, standardize(g, StandardFormSPLC), x.normalize)
+"""
+    SPLCVertex(normalize=:log)(g)
+
+Struct representing Search Path Link Count vertex weights, as defined in Batagelj (2003).
+`normalize=:totalflow` indicates that weights should be normalized relative to the 
+total SPLC flow, `normalize=:log` indicates that the logarithm of weights is returned.
+Set `normalize` to :none to indicate that weights should not be transformed.
+
+The struct can be called to compute weights directly or
+can be passed to the `mainpath` function for dispatch.
+"""
+Base.@kwdef struct SPLCVertex <: MainPathVertexWeight
+    normalize::Symbol = :log
+end
+
+(x::SPLCVertex)(g) = vertexweights(standardize(g, StandardFormSPLC), x.normalize)
