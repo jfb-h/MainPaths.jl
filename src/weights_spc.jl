@@ -161,7 +161,7 @@ Set `normalize` to :none to indicate that weights should not be transformed.
 The struct can be called to compute weights directly or
 can be passed to the `mainpath` function for dispatch.
 """
-Base.@kwdef struct SPLCEdge <: MainPathVertexWeight
+Base.@kwdef struct SPLCEdge <: MainPathEdgeWeight
     normalize::Symbol = :log
 end
 
