@@ -118,7 +118,7 @@ abstract type MainPathVertexWeight <: MainPathWeight end
 """
     SPCEdge(normalize=:log)(g)
 
-Struct representing Search Path Cout (SPC) edge weights, as defined in Batagelj (2003). 
+Struct representing Search Path Count (SPC) edge weights, as defined in Batagelj (2003). 
 `normalize=:totalflow` indicates that weights should be normalized relative to the 
 total SPC flow, `normalize=:log` indicates that the logarithm of weights is returned. 
 Set `normalize` to :none to indicate that weights should not be transformed.
@@ -135,7 +135,7 @@ end
 """
     SPCVertex(normalize=:log)(g)
 
-Struct representing Search Path Cout (SPC) vertex weights, as defined in Batagelj (2003). 
+Struct representing Search Path Count (SPC) vertex weights, as defined in Batagelj (2003). 
 `normalize=:totalflow` indicates that weights should be normalized relative to the 
 total SPC flow, `normalize=:log` indicates that the logarithm of weights is returned.
 Set `normalize` to :none to indicate that weights should not be transformed.
