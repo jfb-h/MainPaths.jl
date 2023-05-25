@@ -1,11 +1,11 @@
 struct MainPathResult{T}
-    mainpath::SimpleDiGraph{T}
-    vertices::Vector{T}
-    start::Vector{T}
+  mainpath::SimpleDiGraph{T}
+  vertices::Vector{T}
+  start::Vector{T}
 end
 
-function Base.show(io::IO, mp::MainPathResult) 
-    println(io, "MainPath with $(nv(mp.mainpath)) vertices and $(ne(mp.mainpath)) edges.")
+function Base.show(io::IO, mp::MainPathResult)
+  println(io, "MainPath with $(nv(mp.mainpath)) vertices and $(ne(mp.mainpath)) edges.")
 end
 
 """
@@ -17,11 +17,19 @@ as specified by `weights` and performing main path traversal according to `trave
 types, respectively. 
 """
 function mainpath(g, weights::MainPathWeight, traversal::MainPathTraversal)
-    mp = traversal(g, weights)
-    mp, vs = remove_isolates(mp)
-    s = Set(traversal.start)
-    start = findall(v -> v in s, vs)
-    MainPathResult(mp, vs, start)
+  mp = traversal(g, weights)
+  mp, vs = remove_isolates(mp)
+  s = Set(traversal.start)
+  start = findall(v -> v in s, vs)
+  MainPathResult(mp, vs, start)
+end
+
+function mainpath(g, weights::AbstractSparseMatrix, weighttype::MainPathWeight, traversal::MainPathTraversal)
+  mp = traversal(g, weights, weighttype)
+  mp, vs = remove_isolates(mp)
+  s = Set(traversal.start)
+  start = findall(v -> v in s, vs)
+  MainPathResult(mp, vs, start)
 end
 
 Graphs.nv(mp::MainPathResult) = nv(mp.mainpath)
@@ -34,9 +42,9 @@ Return the weights of all edges in the mainpath `mp` from the weights matrix `w`
 traversal weights for the original graph.
 """
 function edgeweights(mp::MainPathResult, w::AbstractMatrix)
-    map(edges(mp.mainpath)) do e
-        s = mp.vertices[src(e)]
-        d = mp.vertices[dst(e)]
-        w[s, d]
-    end
+  map(edges(mp.mainpath)) do e
+    s = mp.vertices[src(e)]
+    d = mp.vertices[dst(e)]
+    w[s, d]
+  end
 end
